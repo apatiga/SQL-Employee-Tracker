@@ -1,7 +1,8 @@
 {
   "dependencies": {
+    "chalk": "^5.2.0",
+    "console.table": "^0.10.0",
     "inquirer": "^8.2.4",
-    "json": "^11.0.0",
     "mysql2": "^3.4.2"
   }
 }
