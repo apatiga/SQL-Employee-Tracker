@@ -1,21 +1,32 @@
-const inquirer = require("inquirer");
-const mysql = require("mysql2");
+const express = require('express');
+const inquirer = require('inquirer');
+const mysql = require('mysql2');
+// env
+const dotenv = require('dotenv')
+dotenv.config()
+const { env } = process.env
 
-
-var connection = mysql.createConnection({
+const connectionConfig = {
     host: "localhost",
     user: "root",
     password: "",
     port: 3306,
     database: "employeeTracker_db",
-})
+}
+
+if (env !== 'PRODUCTION') {
+    connectionConfig.socketPath ='/tmp/mysql.sock'
+};
+
+const connection = mysql.createConnection(
+    connectionConfig);
 
 // connects to the mysql database
 
 connection.connect(function (err) {
     if (err) return console.log(err);
-    InquirerPrompt();
-})
+    InquirerPrompt()
+});
 
 
 const InquirerPrompt = () => {
@@ -86,7 +97,7 @@ const InquirerPrompt = () => {
                             break;
                     }
                 });
-}
+};
 
 // show employees
 showEmployees = () => {
@@ -102,7 +113,7 @@ showEmployees = () => {
 
 //Add employee
 addEmployees = ()  => {
-    inquirer.prompt([
+    prompt([
         {
             type: 'input',
             name: 'first_name',
@@ -122,7 +133,7 @@ addEmployees = ()  => {
             if(err) return console.log(err);
             const roles = data.map(({ id, title }) => ({ name:title, value:id}));
 
-            inquirer.prompt([
+            prompt([
                 {
                 type: 'list',
                 name: 'role',
@@ -139,7 +150,7 @@ addEmployees = ()  => {
        })
     })
 })
-}
+};
 
 //update employees
 updateEmployees = () => {
@@ -149,7 +160,7 @@ updateEmployees = () => {
 
         const employee = data.map(({ id, first_name, last_name }) => ({ name: first_name + " " + last_name, value: id }));
 
-        inquirer.prompt([
+        prompt([
             {
                 type: 'list',
                 name: 'name',
@@ -168,7 +179,7 @@ updateEmployees = () => {
                     if (err) return console.log(err);
                     const roles = data.map(({ id, title }) => ({ name: title, value: id }));
 
-                    inquirer.prompt([
+                    prompt([
                         {
                             type: 'list',
                             name: 'role',
@@ -210,7 +221,7 @@ showRoles = () => {
 
 //add roles information
 addRoles = () => {
-    inquirer.prompt([
+    prompt([
         {
             type: 'input',
             name: 'roles',
@@ -232,7 +243,7 @@ addRoles = () => {
                 if (err) return console.log(err);
                 const department_var = data.map(({ name, id }) => ({ name: name, value: id }));
 
-                inquirer.prompt([
+                prompt([
 
                     {
                         type: 'list',
@@ -271,7 +282,7 @@ connection.query(mysql, (err, rows) => {
 
 //Update/ADD Department
 addDepartments = () => {
-    inquirer.prompt([
+    prompt([
         {
             type: 'input',
             name: 'department',
@@ -285,9 +296,9 @@ addDepartments = () => {
                 console.log('Added' + answer.department + "to departments");
 
                 showDepartments();
-            });
+            })
         });
-}
+};
 
 
 
